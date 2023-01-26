@@ -17,7 +17,7 @@ app.use(express.json())
 
 app.get('/', async (req, res) => {
   res.status(200).send({
-    message: 'Hello there!'
+    message: 'Hallo du!'
   })
 })
 
@@ -25,16 +25,19 @@ app.post('/', async (req, res) => {
   try {
     const prompt = req.body.prompt;
 
+        const finalPrompt = "Be a highly intelligent homework solving bot, who is specified to write texts. Human:\n" + prompt;
+    let max_tokens = 1000;
+    
     const response = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: `${prompt}`,
-      temperature: 0, // Higher values means the model will take more risks.
-      max_tokens: 3000, // The maximum number of tokens to generate in the completion. Most models have a context length of 2048 tokens (except for the newest models, which support 4096).
+      model: "text-davinci-003", 
+      prompt: `${finalPrompt}`, // ich muss hier noch beispiele geben oder so ich muss noch nachdenken
+      temperature: 0.7, // Higher values means the model will take more risks.
+      max_tokens: max_tokens, // The maximum number of tokens to generate in the completion. Most models have a context length of 2048 tokens (except for the newest models, which support 4096).
       top_p: 1, // alternative to sampling with temperature, called nucleus sampling
       frequency_penalty: 0.5, // Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
-      presence_penalty: 0, // Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
+      presence_penalty: 1.2, // Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
     });
-
+    
     res.status(200).send({
       bot: response.data.choices[0].text
     });
